@@ -1,0 +1,117 @@
+Saturday assigment-
+1st question-
+import java.util.ArrayList;
+import org.bson.Document;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.*;
+import com.mongodb.client.model.Filters;
+public class Connection_Practice1 {
+    public static void main(String[] args) {
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+        MongoDatabase database = mongoClient.getDatabase("Saturday");
+        
+        MongoCollection<Document> collection = database.getCollection("student");
+        collection.drop();
+        Document document1 = new Document("First_Name", "Suneeth")
+            .append("Last_Name", "reddy")
+            .append("Mark", 91)
+            .append("age", 18);
+        Document document2 = new Document("First_Name", "praneeth")
+            .append("Last_Name", "reddy")
+            .append("Mark", 90)
+            .append("age", 22);
+        Document document3 = new Document("First_Name", "kushal")
+            .append("Last_Name", "reddy")
+            .append("Mark", 87)
+            .append("age", 20);
+        Document document4 = new Document("First_Name", "kishore")
+            .append("Last_Name", "kishna")
+            .append("Mark", 89)
+            .append("age", 19);
+
+        ArrayList<Document> documents = new ArrayList<Document>();
+        documents.add(document1);
+        documents.add(document2);
+        documents.add(document3);
+        documents.add(document4);
+        collection.insertMany(documents);
+
+        Document highestMarkDoc = collection.find().sort(new BasicDBObject("Mark", -1)).first();
+        if (highestMarkDoc != null) {
+            int highestMark = highestMarkDoc.getInteger("Mark");
+
+            FindIterable<Document> highestMarkStudents = collection.find(Filters.eq("Mark", highestMark));
+
+            System.out.println("Students with the highest mark:");
+            for (Document doc : highestMarkStudents) {
+                System.out.println(doc);
+            }
+        } else {
+            System.out.println("No students found");
+        }
+    }
+}
+2nd question-
+import java.util.ArrayList;
+import org.bson.Document;
+import com.mongodb.BasicDBObject;
+import com.mongodb.client.*;
+
+public class Assignment_2 {
+    public static void main(String[] args) {
+        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+        MongoDatabase database = mongoClient.getDatabase("Saturday");
+
+        MongoCollection<Document> collection = database.getCollection("employee");
+        collection.drop();
+
+        Document document1 = new Document("First_Name", "Suneeth")
+            .append("Last_Name", "reddy")
+            .append("salary", 20000)
+            .append("age", 35);
+        Document document2 = new Document("First_Name", "praneeth")
+            .append("Last_Name", "reddy")
+            .append("salary", 35000)
+            .append("age", 30);
+        Document document3 = new Document("First_Name", "kushal")
+            .append("Last_Name", "reddy")
+            .append("salary", 13000)
+            .append("age", 42);
+        Document document4 = new Document("First_Name", "kishore")
+            .append("Last_Name", "kishna")
+            .append("salary", 32000)
+            .append("age", 37);
+        Document document5 = new Document("First_Name", "somu")
+                .append("Last_Name", "reddy")
+                .append("salary", 35000)
+                .append("age", 44);
+        Document document6 = new Document("First_Name", "sreekar")
+                .append("Last_Name", "reddy")
+                .append("salary", 32000)
+                .append("age", 32);
+
+        ArrayList<Document> documents = new ArrayList<>();
+        documents.add(document1);
+        documents.add(document2);
+        documents.add(document3);
+        documents.add(document4);
+        documents.add(document5);
+        documents.add(document6);
+        collection.insertMany(documents);
+        FindIterable<Document> allDocumentsSortedBySalary = collection.find().sort(new BasicDBObject("salary", 1));
+        Document lowestSalaryDoc = null;
+        for (Document doc : allDocumentsSortedBySalary) {
+            int age = doc.getInteger("age");
+            if (age >= 30 && age <= 40) {
+                lowestSalaryDoc = doc;
+                break;
+            }
+        }
+        if (lowestSalaryDoc != null) {
+            System.out.println("Employee with the lowest salary in the age range 30 to 40:");
+            System.out.println(lowestSalaryDoc.toJson());
+        } else {
+            System.out.println("No employees found in the specified age range.");
+        }
+    }
+}
