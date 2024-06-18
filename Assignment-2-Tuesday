@@ -1,0 +1,6 @@
+1)Price should be grater than either 799 or ram is greater than 12
+db.products1.find({$or: [{ price: { $gt: 799 } },{ "spec.ram": { $gt: 12 } }]})
+2)Find products that do not have "white" as a color and are priced below 800
+db.products1.find({color: { $nin: ["white"] },price: { $lt: 800 }})
+3)select products with either blue colour and storage not less than 128
+db.products1.find({color: "blue","storage": { $gte: 128 }})
